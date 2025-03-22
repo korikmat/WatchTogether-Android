@@ -2,6 +2,7 @@ package com.korikmat.watchtogether.ui
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,9 +25,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import com.korikmat.watchtogether.R
 
 data class Movie1(
@@ -36,6 +40,8 @@ data class Movie1(
 
 @Composable
 fun MatchesScreen() {
+    var showSheet by remember { mutableStateOf(false) }
+
     val movies = listOf(
         Movie1("Хантер", R.drawable.placeholder),
         Movie1("Матрица", R.drawable.placeholder),
@@ -61,18 +67,25 @@ fun MatchesScreen() {
         )
     ) {
         items(movies) { movie ->
-            MovieItem(movie)
+            MovieItem(movie, { showSheet = true })
         }
+    }
+    if (showSheet) {
+        MovieDetailsSheet(
+            onDismissRequest = { showSheet = false },
+            onBackClick = { /* сделать что-то или тоже закрыть */ }
+        )
     }
 }
 
 @Composable
-fun MovieItem(movie: Movie1) {
+fun MovieItem(movie: Movie1, onMovieClicked: () -> Unit) {
     Card(
         // Отступ вокруг карточки
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, top = 8.dp, end = 16.dp),
+            .padding(start = 16.dp, top = 8.dp, end = 16.dp)
+            .clickable { onMovieClicked() },
         // Закруглённые углы
         shape = RoundedCornerShape(16.dp),
         // Тень (elevation)
@@ -81,7 +94,7 @@ fun MovieItem(movie: Movie1) {
             pressedElevation = 2.dp,
             focusedElevation = 12.dp
         ),
-        colors = CardDefaults.cardColors(Color.White)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
