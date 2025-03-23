@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "WatchTogether"
 include(":app")
- 
+include(":domain")
+include(":data")

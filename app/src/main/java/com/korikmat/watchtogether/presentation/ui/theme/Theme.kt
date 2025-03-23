@@ -1,4 +1,4 @@
-package com.korikmat.watchtogether.ui.theme
+package com.korikmat.watchtogether.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build

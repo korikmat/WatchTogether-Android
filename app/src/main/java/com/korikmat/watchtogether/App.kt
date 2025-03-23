@@ -6,11 +6,11 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 
-class BaseApplication : Application() {
+class App : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin{
-            androidContext(this@BaseApplication)
+            androidContext(this@App)
             modules(appModule)
 
         }

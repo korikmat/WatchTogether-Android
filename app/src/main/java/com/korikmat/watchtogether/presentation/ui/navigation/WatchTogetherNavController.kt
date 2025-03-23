@@ -1,4 +1,4 @@
-package com.korikmat.watchtogether.ui.navigation
+package com.korikmat.watchtogether.presentation.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable

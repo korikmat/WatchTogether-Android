@@ -1,6 +1,7 @@
-package com.korikmat.watchtogether.ui
+package com.korikmat.watchtogether.presentation.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +25,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,34 +68,39 @@ fun GenreSelectionScreen(
             })
         }) { paddingValues ->
         // Основной контент экрана
-        FlowRow(
+        Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize()
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                .fillMaxSize()
         ) {
             Text(
                 text = "Выберите любимые жанры, чтобы получать фильмы по вкусу:",
                 style = MaterialTheme.typography.titleMedium
             )
+            FlowRow(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            ) {
 
-            // Список категорий (FilterChip'ы)
-            availableGenres.forEach { genre ->
-                val isSelected = genre in selectedGenres.value
 
-                // FilterChip - современный вариант, можно заменить на Checkbox + Text
-                FilterChip(
-                    selected = isSelected, onClick = {
-                    // При клике добавляем/убираем из selectedGenres
-                    selectedGenres.value = selectedGenres.value.toMutableSet().apply {
-                        if (isSelected) remove(genre) else add(genre)
-                    }
-                }, label = {
-                    Text(genre)
-                },
+                // Список категорий (FilterChip'ы)
+                availableGenres.forEach { genre ->
+                    val isSelected = genre in selectedGenres.value
+
+                    // FilterChip - современный вариант, можно заменить на Checkbox + Text
+                    FilterChip(
+                        selected = isSelected, onClick = {
+                            // При клике добавляем/убираем из selectedGenres
+                            selectedGenres.value = selectedGenres.value.toMutableSet().apply {
+                                if (isSelected) remove(genre) else add(genre)
+                            }
+                        }, label = {
+                            Text(genre)
+                        },
 //                    leadingIcon = {
 //                        // Иконка (галочка), если чип выбран
 //                        if (isSelected) {
@@ -103,17 +110,18 @@ fun GenreSelectionScreen(
 //                            )
 //                        }
 //                    },
-                    trailingIcon = {
-                        // Иконка (галочка), если чип выбран
-                        if (isSelected) {
-                            Icon(
-                                imageVector = Icons.Default.Check, contentDescription = null
-                            )
-                        }
-                    }, shape = RoundedCornerShape(16.dp), modifier = Modifier
+                        trailingIcon = {
+                            // Иконка (галочка), если чип выбран
+                            if (isSelected) {
+                                Icon(
+                                    imageVector = Icons.Default.Check, contentDescription = null
+                                )
+                            }
+                        }, shape = RoundedCornerShape(16.dp), modifier = Modifier
 //                        .fillMaxWidth()
-                        .height(56.dp)
-                )
+                            .height(56.dp)
+                    )
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.korikmat.watchtogether.ui
+package com.korikmat.watchtogether.presentation.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween

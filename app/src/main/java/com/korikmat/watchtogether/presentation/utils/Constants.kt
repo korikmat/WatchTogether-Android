@@ -1,4 +1,4 @@
-package com.korikmat.watchtogether.utils
+package com.korikmat.watchtogether.presentation.utils
 
 object Constants {
     const val SPECIFY_GENRES_ROUTES: String = "specify_genres_route"

@@ -1,4 +1,4 @@
-package com.korikmat.watchtogether.ui.navigation
+package com.korikmat.watchtogether.presentation.ui.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -27,7 +27,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.korikmat.watchtogether.R
-import com.korikmat.watchtogether.utils.Constants
+import com.korikmat.watchtogether.presentation.utils.Constants
 
 enum class BottomNavigationItems(
     @StringRes val title: Int = 0,

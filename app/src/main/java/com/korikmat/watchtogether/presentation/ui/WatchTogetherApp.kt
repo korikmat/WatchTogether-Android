@@ -1,4 +1,4 @@
-package com.korikmat.watchtogether.ui
+package com.korikmat.watchtogether.presentation.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,13 +13,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.korikmat.watchtogether.ui.navigation.BottomNavigationBar
-import com.korikmat.watchtogether.ui.navigation.BottomNavigationItems
-import com.korikmat.watchtogether.ui.navigation.MainDestinations
-import com.korikmat.watchtogether.ui.navigation.NavigationScreens
-import com.korikmat.watchtogether.ui.navigation.WatchTogetherNavController
-import com.korikmat.watchtogether.ui.navigation.rememberWatchTogetherNavController
-import com.korikmat.watchtogether.ui.theme.WatchTogetherTheme
+import com.korikmat.watchtogether.presentation.ui.navigation.BottomNavigationBar
+import com.korikmat.watchtogether.presentation.ui.navigation.BottomNavigationItems
+import com.korikmat.watchtogether.presentation.ui.navigation.MainDestinations
+import com.korikmat.watchtogether.presentation.ui.navigation.NavigationScreens
+import com.korikmat.watchtogether.presentation.ui.navigation.WatchTogetherNavController
+import com.korikmat.watchtogether.presentation.ui.navigation.rememberWatchTogetherNavController
+import com.korikmat.watchtogether.presentation.ui.theme.WatchTogetherTheme
 
 @Preview(
     showBackground = true,

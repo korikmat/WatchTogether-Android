@@ -13,10 +13,10 @@
         android:theme="@style/Theme.WatchTogether"
         tools:targetApi="31"
 
-        android:name=".BaseApplication">
+        android:name=".App">
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".presentation.ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.WatchTogether">

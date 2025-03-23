@@ -1,4 +1,4 @@
-package com.korikmat.watchtogether.ui
+package com.korikmat.watchtogether.presentation.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
