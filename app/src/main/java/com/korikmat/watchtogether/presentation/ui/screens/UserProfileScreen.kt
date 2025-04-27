@@ -1,6 +1,5 @@
-package com.korikmat.watchtogether.presentation.ui
+package com.korikmat.watchtogether.presentation.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,35 +10,52 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.korikmat.watchtogether.R
+import com.korikmat.watchtogether.presentation.ui.viewModels.UserProfileViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun UserProfileScreen(
     onEditUserProfileClicked: () -> Unit,
-    onLogOutClicked: () -> Unit,
-    onSpecifyGenresClicked: () -> Unit
+    onSpecifyGenresClicked: () -> Unit,
+    vm: UserProfileViewModel = koinViewModel<UserProfileViewModel>(),
 ) {
+    val state = vm.state.collectAsState().value
 
+    var showResetDialog by remember { mutableStateOf(false) }
     Box {
         Column(
             verticalArrangement = Arrangement.spacedBy(50.dp),
@@ -48,42 +64,64 @@ fun UserProfileScreen(
                 .verticalScroll(rememberScrollState()),
         ) {
 
-            ProfileBlock(onEditUserProfileClicked = onEditUserProfileClicked)
+            ProfileBlock(
+                name = state.name,
+                nickname = "@${state.nickname}",
+                imageUri = state.imageUri,
+                onEditUserProfileClicked = onEditUserProfileClicked
+            )
 
             SettingsBlock {
-                SettingsItem(text = "Specify favorite genres", onClick = onSpecifyGenresClicked)
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
+                SettingsItem(text = stringResource(R.string.specify_favorite_genres), onClick = onSpecifyGenresClicked)
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .align(Alignment.CenterHorizontally)
+                )
+                SettingsButton(text = stringResource(R.string.reset_rated_movies), onClick = { showResetDialog = true })
             }
-            SettingsBlock {
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-            }
-            SettingsBlock {
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-                SettingsItem("Specify favorite genres", onSpecifyGenresClicked)
-            }
+
 
             Spacer(modifier = Modifier.size(50.dp))
         }
 
         LogOutButton(
-            text = "Logout",
-            onClick = onLogOutClicked
+            text = stringResource(R.string.logout),
+            contentAlignment = Alignment.BottomCenter,
+            onClick = {
+                vm.logout()
+            }
+        )
+    }
+
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDialog = false },
+            title = { Text(stringResource(R.string.reset_rated_movies_question)) },
+            text = { Text(stringResource(R.string.are_you_sure_you_want_to_reset)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    vm.resetRatedMovies()
+                    showResetDialog = false
+                }) { Text(stringResource(R.string.yes)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDialog = false }) { Text(stringResource(R.string.no)) }
+            }
         )
     }
 }
 
 @Composable
-fun LogOutButton(text: String = "Log out", modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun LogOutButton(
+    modifier: Modifier = Modifier,
+    text: String = stringResource(R.string.logout),
+    contentAlignment: Alignment = Alignment.BottomCenter,
+    onClick: () -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
+        contentAlignment = contentAlignment
     ) {
 
         SettingsBlock(
@@ -91,13 +129,18 @@ fun LogOutButton(text: String = "Log out", modifier: Modifier = Modifier, onClic
                 .background(Color(0xFF990303))
                 .then(modifier)
         ) {
-            SettingsItem(text, onClick)
+            SettingsButton(text, onClick)
         }
     }
 }
 
 @Composable
-fun ProfileBlock(onEditUserProfileClicked: () -> Unit) {
+fun ProfileBlock(
+    name: String,
+    nickname: String,
+    imageUri: String?,
+    onEditUserProfileClicked: () -> Unit
+) {
     Box(
         modifier = Modifier
             .padding(0.dp)
@@ -116,26 +159,37 @@ fun ProfileBlock(onEditUserProfileClicked: () -> Unit) {
         contentAlignment = Alignment.TopCenter
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(
-                painter = painterResource(id = R.drawable.placeholder),
-                contentDescription = "User avatar",
+
+            Box(
                 modifier = Modifier
-                    .padding(top = 20.dp)
-
-                    .size(150.dp)
-
+                    .padding(5.dp)
+                    .width(150.dp)
+                    .height(150.dp)
                     .shadow(16.dp, shape = RoundedCornerShape(20.dp))
-//                        .clip(RoundedCornerShape(20.dp))
-//                        .align(Alignment.CenterHorizontally)
-            )
+                    .background(Color.LightGray),
+                contentAlignment = Alignment.Center
+            ) {
+                if (imageUri == null) {
+                    Text(stringResource(R.string.photo), color = Color.DarkGray)
+                } else {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageUri)
+                            .build(),
+                        contentDescription = stringResource(R.string.user_photo),
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
+            }
             Text(
-                text = "Killua",
+                text = name,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .padding(top = 10.dp)
             )
             Text(
-                text = "@killua",
+                text = nickname,
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier
 
@@ -153,15 +207,14 @@ fun ProfileBlock(onEditUserProfileClicked: () -> Unit) {
                     .clickable { onEditUserProfileClicked() }
             ) {
                 Text(
-                    text = "Edit",
+                    text = stringResource(R.string.edit),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(10.dp)
                 )
                 Icon(
                     Icons.Filled.Edit,
-                    contentDescription = "Edit info",
+                    contentDescription = stringResource(R.string.edit_info),
                     modifier = Modifier
-//                            .padding(10.dp)
                         .size(15.dp)
                 )
             }
@@ -176,17 +229,11 @@ fun SettingsBlock(modifier: Modifier = Modifier, content: @Composable () -> Unit
         modifier = Modifier
             .padding(10.dp)
             .shadow(16.dp, shape = RoundedCornerShape(20.dp))
-//            .clip(RoundedCornerShape(30.dp))
             .background(MaterialTheme.colorScheme.surface)
             .then(modifier),
 
         ) {
         content()
-//        HorizontalDivider(
-//            modifier = Modifier
-//                .fillMaxWidth(0.8f)
-//                .align(Alignment.CenterHorizontally),
-//        )
     }
 }
 
@@ -206,8 +253,25 @@ fun SettingsItem(text: String, onClick: () -> Unit) {
         )
         Icon(
             Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = "Go to settings",
+            contentDescription = null,
             modifier = Modifier.padding(15.dp)
+        )
+    }
+}
+
+@Composable
+fun SettingsButton(text: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(horizontal = 35.dp, vertical = 15.dp)
         )
     }
 }
@@ -219,5 +283,5 @@ fun SettingsItem(text: String, onClick: () -> Unit) {
 )
 @Composable
 fun UserProfileScreenPreview() {
-    UserProfileScreen({}, {}, {})
+    UserProfileScreen({}, {})
 }

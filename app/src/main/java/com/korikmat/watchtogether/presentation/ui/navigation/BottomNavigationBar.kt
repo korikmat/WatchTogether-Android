@@ -95,6 +95,7 @@ sealed class NavigationScreens(var screenRoute: String) {
     data object Profile : NavigationScreens(Constants.PROFILE_ROUTES)
     data object Movies : NavigationScreens(Constants.MOVIES_ROUTES)
     data object Matches : NavigationScreens(Constants.MATCHES_ROUTES)
-    data object MovieDetails : NavigationScreens(Constants.MOVIE_DETAILS_ROUTES)
     data object EditUserProfile : NavigationScreens(Constants.EDIT_USER_PROFILE_ROUTES)
+    data object FavoriteMovies : NavigationScreens(Constants.FAVORITE_MOVIES_ROUTES)
+    data object DislikedMovies : NavigationScreens(Constants.DISLIKED_MOVIES_ROUTES)
 }

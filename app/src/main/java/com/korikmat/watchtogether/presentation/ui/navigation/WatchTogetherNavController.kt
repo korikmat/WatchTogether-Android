@@ -8,11 +8,13 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.rememberNavController
 
 object MainDestinations {
+    const val CREATE_USER_ROUTE = "create_user"
+    const val SELECT_USER_ROUTE = "select_user"
     const val HOME_ROUTE = "home"
-    const val MOVIE_DETAIL_ROUTE = "movie"
 }
 
 
@@ -44,21 +46,13 @@ class WatchTogetherNavController(
         }
     }
 
-    fun navigateToMovieDetails(from: NavBackStackEntry) {
-        // In order to discard duplicated navigation events, we check the Lifecycle
-        if (from.lifecycleIsResumed()) {
-            navController.navigate(MainDestinations.MOVIE_DETAIL_ROUTE)
-        }
+    fun navigate(route: String, builder: NavOptionsBuilder.() -> Unit = {
+        launchSingleTop = true
+        restoreState = true
+    }) {
+        navController.navigate(route, builder = builder)
     }
 }
-
-/**
- * If the lifecycle is not resumed it means this NavBackStackEntry already processed a nav event.
- *
- * This is used to de-duplicate navigation events.
- */
-private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.lifecycle.currentState == Lifecycle.State.RESUMED
 
 private val NavGraph.startDestination: NavDestination?
     get() = findNode(startDestinationId)

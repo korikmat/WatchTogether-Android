@@ -1,4 +1,4 @@
-package com.korikmat.watchtogether.presentation.ui
+package com.korikmat.watchtogether.presentation.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,11 +27,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.korikmat.watchtogether.R
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GenreSelectionScreen(
     availableGenres: List<String> = listOf(
@@ -41,33 +43,28 @@ fun GenreSelectionScreen(
     onBackClick: () -> Unit,
     onSaveClick: (List<String>) -> Unit
 ) {
-    // Состояние выбранных категорий
-    // Превращаем initialSelectedGenres в MutableSet, чтобы удобно добавлять/удалять
     val selectedGenres = remember {
         mutableStateOf(initialSelectedGenres.toMutableSet())
     }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Выбрать категории") }, navigationIcon = {
+            TopAppBar(title = { Text(stringResource(R.string.select_genres)) }, navigationIcon = {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Назад"
+                        contentDescription = stringResource(R.string.back)
                     )
                 }
             }, actions = {
-                // Кнопка "Сохранить"
                 TextButton(
                     onClick = {
-                        // Передаём выбранные жанры наверх
                         onSaveClick(selectedGenres.value.toList())
                     }) {
-                    Text("Сохранить", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.save), fontWeight = FontWeight.Bold)
                 }
             })
         }) { paddingValues ->
-        // Основной контент экрана
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -75,7 +72,7 @@ fun GenreSelectionScreen(
                 .fillMaxSize()
         ) {
             Text(
-                text = "Выберите любимые жанры, чтобы получать фильмы по вкусу:",
+                text = stringResource(R.string.select_your_favorite_genres_to_get_movies_tailored_to_your_taste),
                 style = MaterialTheme.typography.titleMedium
             )
             FlowRow(
@@ -87,38 +84,25 @@ fun GenreSelectionScreen(
             ) {
 
 
-                // Список категорий (FilterChip'ы)
                 availableGenres.forEach { genre ->
                     val isSelected = genre in selectedGenres.value
 
-                    // FilterChip - современный вариант, можно заменить на Checkbox + Text
                     FilterChip(
                         selected = isSelected, onClick = {
-                            // При клике добавляем/убираем из selectedGenres
                             selectedGenres.value = selectedGenres.value.toMutableSet().apply {
                                 if (isSelected) remove(genre) else add(genre)
                             }
                         }, label = {
                             Text(genre)
                         },
-//                    leadingIcon = {
-//                        // Иконка (галочка), если чип выбран
-//                        if (isSelected) {
-//                            Icon(
-//                                imageVector = Icons.Default.Check,
-//                                contentDescription = null
-//                            )
-//                        }
-//                    },
+
                         trailingIcon = {
-                            // Иконка (галочка), если чип выбран
                             if (isSelected) {
                                 Icon(
                                     imageVector = Icons.Default.Check, contentDescription = null
                                 )
                             }
                         }, shape = RoundedCornerShape(16.dp), modifier = Modifier
-//                        .fillMaxWidth()
                             .height(56.dp)
                     )
                 }
