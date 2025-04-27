@@ -22,7 +22,6 @@ Android app that makes it painless to **discover movies together** and build a s
 |----------------------------------------------|----------------------------------------------|----------------------------------------------|--------------------------------------------|
 | ![Home screen](docs/media/select_movies.png) | ![User Profile](docs/media/user_profile.png) | ![Liked Movies](docs/media/liked_movies.png) | ![Select User](docs/media/select_user.png) |
 
-> Add your gifs or screenshots to `/docs/media` and update the table above.
 
 ---
 
