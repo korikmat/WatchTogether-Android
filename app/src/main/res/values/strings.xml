@@ -38,4 +38,10 @@
     <string name="edit_info">Edit info</string>
     <string name="delete_movie_s">Delete movie(s)?</string>
     <string name="are_you_sure_you_want_to_delete_it">Are you sure you want to delete it?</string>
+    <string name="ok">OK</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="set_the_movie_timer">Set the movie timer</string>
+    <string name="select_time">Select Time</string>
+    <string name="going_to_watch_a_movie_through">Going to watch a movie through:</string>
 </resources>

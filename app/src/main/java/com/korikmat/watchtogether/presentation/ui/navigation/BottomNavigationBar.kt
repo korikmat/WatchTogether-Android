@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -65,9 +66,12 @@ fun BottomNavigationBar(
             .clip(RoundedCornerShape(30.dp))
             .background(MaterialTheme.colorScheme.surface),
     ) {
-        NavigationBar(containerColor = Color.Transparent) {
+        NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
             tabs.forEach { item ->
                 NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
                     selected = item.screenRoute == currentRoute,
                     label = {
                         Text(
@@ -98,4 +102,5 @@ sealed class NavigationScreens(var screenRoute: String) {
     data object EditUserProfile : NavigationScreens(Constants.EDIT_USER_PROFILE_ROUTES)
     data object FavoriteMovies : NavigationScreens(Constants.FAVORITE_MOVIES_ROUTES)
     data object DislikedMovies : NavigationScreens(Constants.DISLIKED_MOVIES_ROUTES)
+    data object Timer : NavigationScreens(Constants.TIMER_ROUTES)
 }

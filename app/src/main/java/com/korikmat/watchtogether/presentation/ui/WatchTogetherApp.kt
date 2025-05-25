@@ -4,7 +4,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,6 +30,7 @@ import com.korikmat.watchtogether.presentation.ui.screens.GenreSelectionScreen
 import com.korikmat.watchtogether.presentation.ui.screens.MatchesScreen
 import com.korikmat.watchtogether.presentation.ui.screens.MovieSelectionScreen
 import com.korikmat.watchtogether.presentation.ui.screens.SelectUserScreen
+import com.korikmat.watchtogether.presentation.ui.screens.TimerScreen
 import com.korikmat.watchtogether.presentation.ui.screens.UserProfileScreen
 import com.korikmat.watchtogether.presentation.ui.theme.WatchTogetherTheme
 import com.korikmat.watchtogether.presentation.ui.viewModels.WatchTogetherAppViewModel
@@ -53,7 +56,8 @@ fun WatchTogetherApp(vm: WatchTogetherAppViewModel = koinViewModel<WatchTogether
         }
         NavHost(
             navController = watchTogetherNavController.navController,
-            startDestination = startRoute
+            startDestination = startRoute,
+//            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
         ) {
             composable(route = MainDestinations.CREATE_USER_ROUTE) {
                 CreateUserScreen()
@@ -79,6 +83,11 @@ fun WatchTogetherApp(vm: WatchTogetherAppViewModel = koinViewModel<WatchTogether
                             NavigationScreens.SpecifyGenres.screenRoute
                         )
                     },
+                    onTimerClicked = {
+                        watchTogetherNavController.navigate(
+                            NavigationScreens.Timer.screenRoute
+                        )
+                    },
                     onFavoriteMoviesClicked = {
                         watchTogetherNavController.navigate(
                             NavigationScreens.FavoriteMovies.screenRoute
@@ -90,7 +99,7 @@ fun WatchTogetherApp(vm: WatchTogetherAppViewModel = koinViewModel<WatchTogether
                         )
                     },
 
-                )
+                    )
             }
             composable(NavigationScreens.EditUserProfile.screenRoute) {
                 EditUserProfileScreen(
@@ -101,6 +110,11 @@ fun WatchTogetherApp(vm: WatchTogetherAppViewModel = koinViewModel<WatchTogether
                 GenreSelectionScreen(
                     onBackClick = watchTogetherNavController::upPress,
                     onSaveClick = { })
+            }
+            composable(NavigationScreens.Timer.screenRoute) {
+                TimerScreen(
+                    onBackClick = watchTogetherNavController::upPress,
+                )
             }
             composable(NavigationScreens.FavoriteMovies.screenRoute) {
                 FavoriteMoviesScreen(
@@ -121,6 +135,7 @@ fun WatchTogetherApp(vm: WatchTogetherAppViewModel = koinViewModel<WatchTogether
 fun MainScreen(
     onEditUserProfileClicked: () -> Unit,
     onSpecifyGenresClicked: () -> Unit,
+    onTimerClicked: () -> Unit,
     onFavoriteMoviesClicked: () -> Unit,
     onDislikedMoviesClicked: () -> Unit,
 ) {
@@ -136,7 +151,9 @@ fun MainScreen(
                 currentRoute = currentRoute ?: NavigationScreens.Movies.screenRoute,
                 navigateToRoute = nestedNavController::navigateToBottomBarRoute,
             )
+
         },
+        containerColor = MaterialTheme.colorScheme.background,
     ) { inner ->
         NavHost(
             nestedNavController.navController,
@@ -163,6 +180,7 @@ fun MainScreen(
                 UserProfileScreen(
                     onEditUserProfileClicked = onEditUserProfileClicked,
                     onSpecifyGenresClicked = onSpecifyGenresClicked,
+                    onTimerClicked = onTimerClicked,
                 )
             }
             composable(NavigationScreens.Movies.screenRoute) {

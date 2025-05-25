@@ -51,6 +51,7 @@ import org.koin.androidx.compose.koinViewModel
 fun UserProfileScreen(
     onEditUserProfileClicked: () -> Unit,
     onSpecifyGenresClicked: () -> Unit,
+    onTimerClicked: () -> Unit,
     vm: UserProfileViewModel = koinViewModel<UserProfileViewModel>(),
 ) {
     val state = vm.state.collectAsState().value
@@ -73,6 +74,12 @@ fun UserProfileScreen(
 
             SettingsBlock {
                 SettingsItem(text = stringResource(R.string.specify_favorite_genres), onClick = onSpecifyGenresClicked)
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .align(Alignment.CenterHorizontally)
+                )
+                SettingsItem(text = stringResource(R.string.set_the_movie_timer), onClick = onTimerClicked)
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
@@ -126,7 +133,7 @@ fun LogOutButton(
 
         SettingsBlock(
             modifier = Modifier
-                .background(Color(0xFF990303))
+                .background(MaterialTheme.colorScheme.error)
                 .then(modifier)
         ) {
             SettingsButton(text, onClick)
@@ -149,13 +156,13 @@ fun ProfileBlock(
             .shadow(
                 16.dp,
                 shape = RoundedCornerShape(
-                    topStart = 0.dp,
-                    topEnd = 0.dp,
+                    topStart = 15.dp,
+                    topEnd = 15.dp,
                     bottomEnd = 20.dp,
                     bottomStart = 20.dp
                 )
             )
-            .background(MaterialTheme.colorScheme.surface),
+            .background(MaterialTheme.colorScheme.surfaceContainer),
         contentAlignment = Alignment.TopCenter
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -185,12 +192,14 @@ fun ProfileBlock(
             Text(
                 text = name,
                 style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier
                     .padding(top = 10.dp)
             )
             Text(
                 text = nickname,
                 style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier
 
             )
@@ -209,11 +218,12 @@ fun ProfileBlock(
                 Text(
                     text = stringResource(R.string.edit),
                     style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier.padding(10.dp)
                 )
                 Icon(
                     Icons.Filled.Edit,
-                    contentDescription = stringResource(R.string.edit_info),
+                    contentDescription = "Edit Profile",
                     modifier = Modifier
                         .size(15.dp)
                 )
@@ -229,7 +239,7 @@ fun SettingsBlock(modifier: Modifier = Modifier, content: @Composable () -> Unit
         modifier = Modifier
             .padding(10.dp)
             .shadow(16.dp, shape = RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .then(modifier),
 
         ) {
@@ -249,6 +259,7 @@ fun SettingsItem(text: String, onClick: () -> Unit) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             modifier = Modifier.padding(horizontal = 35.dp, vertical = 15.dp)
         )
         Icon(
@@ -271,6 +282,7 @@ fun SettingsButton(text: String, onClick: () -> Unit) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             modifier = Modifier.padding(horizontal = 35.dp, vertical = 15.dp)
         )
     }
@@ -283,5 +295,5 @@ fun SettingsButton(text: String, onClick: () -> Unit) {
 )
 @Composable
 fun UserProfileScreenPreview() {
-    UserProfileScreen({}, {})
+    UserProfileScreen({}, {}, {})
 }

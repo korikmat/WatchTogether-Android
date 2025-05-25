@@ -63,7 +63,7 @@ fun EditUserProfileScreen(
 
     val context = LocalContext.current
     val pickImageLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
+        contract = ActivityResultContracts.OpenDocument()
     ) { uri ->
         uri?.let {
             imageUri = uri.toString()
@@ -107,7 +107,7 @@ fun EditUserProfileScreen(
                     .clip(RoundedCornerShape(20.dp))
                     .background(Color.Gray.copy(alpha = 0.3f))
                     .clickable {
-                        pickImageLauncher.launch("image/*")
+                        pickImageLauncher.launch(arrayOf("image/*"))
                     }, contentAlignment = Alignment.Center
             ) {
                 if (imageUri == null) {

@@ -14,17 +14,23 @@ import okhttp3.logging.HttpLoggingInterceptor
 import com.google.gson.GsonBuilder
 import com.korikmat.data.repositories.MoviesRepositoryImpl
 import com.korikmat.data.repositories.SessionRepositoryImpl
+import com.korikmat.data.repositories.TimerRepositoryImpl
 import com.korikmat.data.source.local.DatabaseLocalSource
 import com.korikmat.data.source.local.SessionDataSource
 import com.korikmat.data.source.local.roomDatabase.RoomRemoteImpl
 import com.korikmat.data.source.local.session.SessionDataSourceImpl
+import com.korikmat.data.source.local.systemAlarm.SystemAlarmDataSource
+import com.korikmat.data.source.local.timer.TimerPrefsDataSource
 import com.korikmat.data.source.remote.RemoteMoviesSource
 import com.korikmat.data.source.remote.tmdbService.TMDBRemoteMoviesImpl
 import com.korikmat.domain.repositories.MoviesRepository
 import com.korikmat.domain.repositories.SessionRepository
+import com.korikmat.domain.repositories.TimerRepository
+import com.korikmat.domain.usecases.CancelTimerUseCase
 import com.korikmat.domain.usecases.CreateNewUserUseCase
 import com.korikmat.domain.usecases.DeleteUsersUseCase
 import com.korikmat.domain.usecases.DislikeMoviesUseCase
+import com.korikmat.domain.usecases.GetActiveTimerUseCase
 import com.korikmat.domain.usecases.GetAllUsersUseCase
 import com.korikmat.domain.usecases.GetCurrentUserUseCase
 import com.korikmat.domain.usecases.GetMoviesUseCase
@@ -34,6 +40,7 @@ import com.korikmat.domain.usecases.ResetUserDataUseCase
 import com.korikmat.domain.usecases.SearchInDislikedMoviesUseCase
 import com.korikmat.domain.usecases.SearchInLikedMoviesUseCase
 import com.korikmat.domain.usecases.SetCurrentUserUseCase
+import com.korikmat.domain.usecases.StartTimerUseCase
 import com.korikmat.domain.usecases.UpdateUserDetailsUseCase
 import com.korikmat.watchtogether.presentation.ui.viewModels.CreateUserViewModel
 import com.korikmat.watchtogether.presentation.ui.viewModels.DislikedMoviesViewModel
@@ -42,6 +49,7 @@ import com.korikmat.watchtogether.presentation.ui.viewModels.FavoriteMoviesViewM
 import com.korikmat.watchtogether.presentation.ui.viewModels.MatchesViewModel
 import com.korikmat.watchtogether.presentation.ui.viewModels.MovieSelectionViewModel
 import com.korikmat.watchtogether.presentation.ui.viewModels.SelectUserScreenViewModel
+import com.korikmat.watchtogether.presentation.ui.viewModels.TimerViewModel
 import com.korikmat.watchtogether.presentation.ui.viewModels.UserProfileViewModel
 import com.korikmat.watchtogether.presentation.ui.viewModels.WatchTogetherAppViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -98,6 +106,7 @@ val dataModule = module {
     single<RemoteMoviesSource> { TMDBRemoteMoviesImpl(get(), "5f000ff0bb4a038162e26c4088a2b617") }
     single<MoviesRepository> { MoviesRepositoryImpl(get(), get()) }
     single<SessionRepository> { SessionRepositoryImpl(get(), get()) }
+    single<TimerRepository> { TimerRepositoryImpl(get(), get()) }
 }
 
 val dataStoreModule = module {
@@ -113,12 +122,13 @@ val dataStoreModule = module {
             corruptionHandler = ReplaceFileCorruptionHandler(
                 produceNewData = { emptyPreferences() }
             ),
-            produceFile = { get<Context>().preferencesDataStoreFile("settings_ds") }
+            produceFile = { get<Context>().preferencesDataStoreFile("settings") }
         )
     }
 
     single<SessionDataSource> { SessionDataSourceImpl(get()) }
-
+    single<TimerPrefsDataSource> { TimerPrefsDataSource(get()) }
+    single<SystemAlarmDataSource> { SystemAlarmDataSource(get()) }
 }
 
 val domainModule = module {
@@ -135,6 +145,9 @@ val domainModule = module {
     factory { SetCurrentUserUseCase(get()) }
     factory { DeleteUsersUseCase(get()) }
     factory { LogOutUseCase(get()) }
+    factory { GetActiveTimerUseCase(get()) }
+    factory { StartTimerUseCase(get()) }
+    factory { CancelTimerUseCase(get()) }
 }
 
 val viewModelModule = module {
@@ -147,6 +160,8 @@ val viewModelModule = module {
     viewModel { EditUserProfileViewModel(get(), get()) }
     viewModel { CreateUserViewModel(get())}
     viewModel { SelectUserScreenViewModel(get(), get(), get()) }
+    viewModel { TimerViewModel(get(), get(), get()) }
+
 }
 
 val appModules = listOf(

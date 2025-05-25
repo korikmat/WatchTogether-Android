@@ -221,7 +221,7 @@ fun UserItem(
 ) {
     val bg by animateColorAsState(
         if (selected) MaterialTheme.colorScheme.secondaryContainer
-        else MaterialTheme.colorScheme.surface
+        else MaterialTheme.colorScheme.surfaceContainer
     )
 
     Card(

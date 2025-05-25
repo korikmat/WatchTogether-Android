@@ -25,21 +25,27 @@ class MovieSelectionViewModel(
         MovieSelectionContract.State(
             currentMovie = MovieDataModel(
                 id = 0,
-                title = "",
-                overview = "",
-                posterUrl = "",
-                releaseDate = "",
+                title = "Loading...",
+                overview = "Loading...",
+                posterUrl = "Loading...",
+                releaseDate = "Loading...",
                 rating = 0.0,
-                liked = false,
             ),
-            nextMovie = MovieDataModel(
-                id = 0,
-                title = "",
-                overview = "",
-                posterUrl = "",
-                releaseDate = "",
+            secondMovie = MovieDataModel(
+                id = 1,
+                title = "Loading...",
+                overview = "Loading...",
+                posterUrl = "Loading...",
+                releaseDate = "Loading...",
                 rating = 0.0,
-                liked = false,
+            ),
+            thirdMovie = MovieDataModel(
+                id = 2,
+                title = "Loading...",
+                overview = "Loading...",
+                posterUrl = "Loading...",
+                releaseDate = "Loading...",
+                rating = 0.0,
             ),
         )
     )
@@ -56,44 +62,48 @@ class MovieSelectionViewModel(
 
     private suspend fun getMoviesData() {
         getMoviesUseCase().first() {
+            moviesQueue.clear()
             moviesQueue.addAll(it)
         }
     }
 
     private fun nextMovie() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (moviesQueue.size < 2) {
+            moviesQueue.removeFirstOrNull()
+            if (moviesQueue.size <= 2) {
                 getMoviesData()
+//                newState = _state.value.copy(
+//                    movies = moviesQueue.toList().reversed()
+//                )
             }
             val newState = _state.value.copy(
-                currentMovie = moviesQueue.removeFirstOrNull() ?: MovieDataModel(
+                currentMovie = moviesQueue.first(),
+                secondMovie = moviesQueue.getOrNull(1) ?: MovieDataModel(
                     id = 0,
-                    title = "",
-                    overview = "",
+                    title = "No more movies",
+                    overview = "Please wait for more movies to be loaded.",
                     posterUrl = "",
                     releaseDate = "",
                     rating = 0.0,
-                    liked = false,
                 ),
-                nextMovie = moviesQueue.firstOrNull() ?: MovieDataModel(
+                thirdMovie = moviesQueue.getOrNull(2) ?: MovieDataModel(
                     id = 0,
-                    title = "",
-                    overview = "",
+                    title = "No more movies",
+                    overview = "Please wait for more movies to be loaded.",
                     posterUrl = "",
                     releaseDate = "",
                     rating = 0.0,
-                    liked = false,
-                )
+                ),
+                movies = moviesQueue.toList().reversed()
             )
             updateState(newState)
+
         }
     }
 
     fun likeMovie() {
         viewModelScope.launch(Dispatchers.IO) {
-
-            likeMoviesUseCase.execute(setOf(_state.value.currentMovie.id))
-
+            likeMoviesUseCase.execute(setOf(moviesQueue.first().id))
             nextMovie()
         }
 
@@ -101,8 +111,7 @@ class MovieSelectionViewModel(
 
     fun dislikeMovie() {
         viewModelScope.launch(Dispatchers.IO) {
-            dislikeMoviesUseCase.execute(setOf(_state.value.currentMovie.id))
-
+            dislikeMoviesUseCase.execute(setOf(moviesQueue.first().id))
             nextMovie()
         }
     }

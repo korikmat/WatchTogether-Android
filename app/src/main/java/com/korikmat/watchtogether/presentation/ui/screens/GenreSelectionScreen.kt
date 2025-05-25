@@ -61,7 +61,7 @@ fun GenreSelectionScreen(
                     onClick = {
                         onSaveClick(selectedGenres.value.toList())
                     }) {
-                    Text(stringResource(R.string.save), fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.not_implemented_yet), fontWeight = FontWeight.Bold)
                 }
             })
         }) { paddingValues ->
